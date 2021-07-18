@@ -1,0 +1,168 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Resto {
+     restaurantId : int
+     name : String
+     accountId : int
+     menus : Menu[]
+     openingHours : OpenHour[]
+     logo : Image
+     banner: Image
+     location: String
+    ---
+     addMenu()
+     editMenu()
+     deleteMenu()
+     acceptOrder()
+
+}
+
+class OpenHour{
+    day : int
+    start : time
+    end : time
+}
+
+OpenHour "1..*" --- "1..1" Resto
+
+class Menu {
+     menuId : int
+     category : String
+     foodItems : Food[]
+    ---
+     addFood()
+     editFood()
+     deleteFood()
+}
+
+Menu "0..10" --- "1..1" Resto
+
+class Food {
+     foodId : int
+     name : String
+     ingredients: String[]
+    price: float
+    picture: Image
+}
+
+Food "0..*" --- "1..1" Menu
+
+class Basket {
+     basketId : int
+     customerId : int
+     restaurantId : int
+     employeeId : int
+     orders : Order[]
+     estimateDeliveryTime : time
+     deliveryAddress : String
+     Status : String = "Processing"
+     Total/Cost : float
+     OrderTime : datetime
+     DeliveryTime : datetime
+    ---
+    editFoodQuantity()
+    cancelOrder()
+    confirmOrder()
+    updateStatus()
+    calculateTotalPrice()
+    estimateDeliveryTime()
+}
+
+Basket "0..*" --- "1..1" Resto
+
+class Order {
+    orderId :int
+    menuId :int
+    foodId :int
+    quantity : int
+    price : float
+    remarks : String
+    ---
+    calculatePrice()
+}
+
+Basket "1..1"---"1..*" Order
+
+class User {
+    id : int
+    address : String
+    email : String
+    passwd : String
+    loginTime : datetime
+    userType : String
+    ---
+    updateAccount()
+}
+
+User "1..1"---"1..1" Basket
+
+class Account {
+    email : String
+    passwd : String
+    address : String
+    ---
+    createNewAccount()
+    login()
+}
+
+Account "1..1"---"1..1" User
+
+class Customer {
+    name : String
+    level : String = "customer"
+}
+
+class RestoOwner {
+    restoName : String
+    logo : image
+    banner : image
+    restoId : int
+    level : String = "resto"
+}
+
+Customer --* Account
+
+RestoOwner --* Account
+
+Resto "1..1"---"1..1" RestoOwner
+
+class Report {
+    month : datetime
+    year  : datetime
+    restoId : int
+    ---
+    analyze()
+    retrieveData()
+    displayGraph()
+}
+
+class PopularItem {
+    foodItems : Food[]
+    foodOrderCount: int
+    ---
+    analyzeMontly()
+    analyzeYearly()
+}
+
+class Income {
+    pricePerOrder : float
+    ---
+    calculateIncomeMonthly()
+    calculateIncomeYearly()
+}
+
+class FrequentUser{
+    customerId : int[]
+    orderCount : []
+    ----
+    countUserMonthly()
+    countUserYearly
+}
+
+PopularItem --* Report
+Income --* Report
+FrequentUser --* Report
+Report "1..*" --- "1..1" Resto
+
+@enduml
